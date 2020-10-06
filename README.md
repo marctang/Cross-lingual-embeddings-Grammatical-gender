@@ -5,7 +5,7 @@ Further details will be added later on.
 
 The repository contains the following files and folders:
 * Predictions: gender predictions for every source-target pair (10 per pair), see section 2.3
-* Phylodist.csv: MARC, CAN YOU DESCRIBE THIS ONE?
+* Phylodist.csv: the phylogenetic distance extracted from Chang et al (2015)
 * kappa_voting.rb: this script can either create the datafiles necessary for calculating Fleiss' kappas (see 2.3) or perform the softmax voting necessary for the word-level analysis (see section 4). It uses "Predictions" as input and fills either the folder Kappas or Voted. Within the script set either kappa = false, voting = true or vice versa (but not both to true).
 * kappas.r: this script calculates the Fleiss' kappas based on the contents of the Voted folder (which has to be chosen as the source directory in R). Use R with the preinstalled "irr" package. It will create kappas.tsv in the same folder.
 * for_regression.rb: this script uses the contents of the "Voted" folder to fill the "Regression" folder. It also requires all relevant UD treebanks (with all treebanks for the same language merged into a single file) as input, change path to the treebank folder at the beginning of the script. You may use ud_merge_perlang.rb to merge the UD treebanks.
