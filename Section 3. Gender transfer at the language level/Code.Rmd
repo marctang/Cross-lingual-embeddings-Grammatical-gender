@@ -1,0 +1,74 @@
+---
+title: "Gender transfer at the language level"
+output: html_document
+---
+
+Read the packages
+```{r}
+library(tidyverse)
+options(scipen = 5)
+```
+
+## 3.1 Gender transfer between all systems
+
+
+Read the data
+```{r}
+data <- read.csv("data.ttests.csv")
+```
+
+
+Run t-test between raw accuracy and baseline for languages within Indo-European
+```{r}
+# extract raw accuracy
+data %>% filter(type == "raw_acc" & !source %in% c("stan1318","hebr1245") &  !target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value)) -> raw_acc
+# extract baseline
+data %>% filter(type == "baseline" & !source %in% c("stan1318","hebr1245") & !target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value))-> baseline
+# run t-tests
+t.test(raw_acc$value, baseline$value, paired = T)
+```
+
+Run the same but from Afro-Asiatic languages to Indo-European languages
+```{r}
+# extract raw accuracy
+data %>% filter(type == "raw_acc" & source %in% c("stan1318","hebr1245") &  !target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value)) -> raw_acc
+# extract baseline
+data %>% filter(type == "baseline" & source %in% c("stan1318","hebr1245") & !target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value))-> baseline
+# run t-test
+t.test(raw_acc$value, baseline$value, paired = T)
+```
+
+Run the same but from Indo-European languages to Afro-Asiatic languages
+```{r}
+# extract raw accuracy
+data %>% filter(type == "raw_acc" & !source %in% c("stan1318","hebr1245") &  target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value)) -> raw_acc
+# extract baseline
+data %>% filter(type == "baseline" & !source %in% c("stan1318","hebr1245") & target %in% c("stan1318","hebr1245")) %>% group_by(source, target, type) %>% summarise(value = mean(value))-> baseline
+# run t-test
+t.test(raw_acc$value, baseline$value, paired = T)
+```
+
+Read the data and run the regression for phylogenetic distance
+```{r}
+
+# adjust format
+data.reg$System_source <- factor(data.reg$System_source)
+# run regression
+model <- lm(Accuracy ~ PhyloDist, data = data.reg)
+# visualize results
+summary(model)
+```
+
+## 3.2 Gender transfer between isomorphicsystems
+
+Read the data again to run the regression for phylogenetic distance and system types
+```{r}
+# read data
+data.reg <- read.csv("data.reg.phylodist.system.csv")
+# run regression
+glm.fit <- lm(Accuracy ~ PhyloDist*System_source,
+               data = data.reg)
+# visualize results
+summary(glm.fit)
+```
+
